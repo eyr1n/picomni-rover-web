@@ -46,9 +46,9 @@ export function VelocityJoystick({ onChange }: VelocityJoystickProps) {
     const normalizedX = clampedX / JOYSTICK_RADIUS; // right positive
     const normalizedY = clampedY / JOYSTICK_RADIUS; // down positive
 
-    // ROS style: +x forward/up, +y left
-    const nextVx = -normalizedY * DEFAULT_MAX_SPEED; // up is +x
-    const nextVy = -normalizedX * DEFAULT_MAX_SPEED; // left is +y
+    // +x right, +y up
+    const nextVx = normalizedX * DEFAULT_MAX_SPEED;
+    const nextVy = -normalizedY * DEFAULT_MAX_SPEED;
 
     posRef.current = { x: clampedX, y: clampedY };
     if (knobRef.current) {

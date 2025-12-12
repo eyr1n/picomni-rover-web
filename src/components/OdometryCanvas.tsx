@@ -90,27 +90,27 @@ export const OdometryCanvas = forwardRef<OdometryCanvasHandle>((_, ref) => {
     drawArrow(
       center.x,
       center.y,
-      center.x,
-      center.y - legendArrowLength,
+      center.x + legendArrowLength,
+      center.y,
       '+x',
-      6,
-      -8,
+      8,
+      16,
     );
     drawArrow(
       center.x,
       center.y,
-      center.x - legendArrowLength,
-      center.y,
+      center.x,
+      center.y - legendArrowLength,
       '+y',
-      -28,
-      12,
+      6,
+      -10,
     );
 
     const scale = 50; // 1m -> 50px
     const toScreen = (point: { x: number; y: number }) => ({
-      // ROS style: +x up, +y left
-      x: width / 2 - point.y * scale,
-      y: height / 2 - point.x * scale,
+      // +x right, +y up
+      x: width / 2 + point.x * scale,
+      y: height / 2 - point.y * scale,
     });
 
     const path = historyRef.current;
@@ -137,8 +137,8 @@ export const OdometryCanvas = forwardRef<OdometryCanvasHandle>((_, ref) => {
       const wingLength = 12;
 
       const worldToScreen = (dx: number, dy: number, len: number) => ({
-        x: -dy * len,
-        y: -dx * len,
+        x: dx * len,
+        y: -dy * len,
       });
 
       const frontDir = worldToScreen(
