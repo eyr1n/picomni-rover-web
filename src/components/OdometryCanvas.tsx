@@ -132,7 +132,7 @@ export const OdometryCanvas = forwardRef<OdometryCanvasHandle>((_, ref) => {
     const pos = latest ? toScreen(latest) : { x: width / 2, y: height / 2 };
 
     if (latest) {
-      const heading = latest.yaw;
+      const heading = latest.yaw + Math.PI / 2; // yaw=0 faces up
       const arrowLength = 24;
       const wingLength = 12;
 
