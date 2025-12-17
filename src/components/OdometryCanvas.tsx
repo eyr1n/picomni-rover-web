@@ -106,7 +106,7 @@ export const OdometryCanvas = forwardRef<OdometryCanvasHandle>((_, ref) => {
       -10,
     );
 
-    const scale = 50; // 1m -> 50px
+    const scale = height / 2; // y:1/-1 map to top/bottom edges
     const toScreen = (point: { x: number; y: number }) => ({
       // +x right, +y up
       x: width / 2 + point.x * scale,

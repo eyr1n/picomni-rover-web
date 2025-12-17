@@ -184,11 +184,11 @@ export function App() {
             >
               {buttonLabel}
             </button>
-            <div className="rounded-xl border border-white/10 bg-slate-900/60 px-2 py-3 text-xs text-slate-200">
-              <div className="space-y-1 font-mono text-sm text-center">
+            <div className="rounded-xl border border-white/10 bg-slate-900/60 px-2 py-3 text-xs text-slate-200 flex justify-center">
+              <div className="space-y-1 font-mono text-sm">
                 <div>vx: {command.vx.toFixed(2)} m/s</div>
                 <div>vy: {command.vy.toFixed(2)} m/s</div>
-                <div>w : {command.w.toFixed(2)} rad/s</div>
+                <div>&nbsp;w: {command.w.toFixed(2)} rad/s</div>
               </div>
             </div>
           </div>
