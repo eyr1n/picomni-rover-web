@@ -47,6 +47,15 @@ export function App() {
   const commandRef = useRef<Command>({ vx: 0, vy: 0, w: 0 });
   const odometryCanvasRef = useRef<OdometryCanvasHandle | null>(null);
 
+  const formatVelocity = (value: number) => {
+    return (
+      <>
+        {value < 0 ? '-' : <>&nbsp;</>}
+        {Math.abs(value).toFixed(2)}
+      </>
+    );
+  };
+
   const setCommandVelocities = (vx: number, vy: number) => {
     setCommand((prev) => {
       if (prev.vx === vx && prev.vy === vy) return prev;
@@ -186,9 +195,9 @@ export function App() {
             </button>
             <div className="rounded-xl border border-white/10 bg-slate-900/60 px-2 py-3 text-xs text-slate-200 flex justify-center">
               <div className="space-y-1 font-mono text-sm">
-                <div>vx: {command.vx.toFixed(2)} m/s</div>
-                <div>vy: {command.vy.toFixed(2)} m/s</div>
-                <div>&nbsp;w: {command.w.toFixed(2)} rad/s</div>
+                <div>vx: {formatVelocity(command.vx)} m/s</div>
+                <div>vy: {formatVelocity(command.vy)} m/s</div>
+                <div>&nbsp;w: {formatVelocity(command.w)} rad/s</div>
               </div>
             </div>
           </div>
