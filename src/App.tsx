@@ -163,7 +163,7 @@ export function App() {
         : '接続';
 
   return (
-    <div className="min-h-screen select-none bg-slate-950 text-slate-50">
+    <div>
       <div className="mx-auto max-w-md space-y-3 px-4 py-6">
         <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950/80">
           <OdometryCanvas ref={odometryCanvasRef} />
