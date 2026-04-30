@@ -140,11 +140,20 @@ export class BluetoothService {
   }
 
   #encodeCommand(command: Command) {
-    const buffer = new ArrayBuffer(12);
+    const hasButtons = command.a || command.b;
+    const buffer = new ArrayBuffer(hasButtons ? 13 : 12);
     const view = new DataView(buffer);
     view.setFloat32(0, command.vx, true);
     view.setFloat32(4, command.vy, true);
     view.setFloat32(8, command.w, true);
+
+    if (hasButtons) {
+      let buttons = 0;
+      if (command.a) buttons |= 1;
+      if (command.b) buttons |= 2;
+      view.setUint8(12, buttons);
+    }
+
     return new Uint8Array(buffer);
   }
 }

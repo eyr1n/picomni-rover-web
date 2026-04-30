@@ -37,6 +37,8 @@ export function App() {
     vx: 0,
     vy: 0,
     w: 0,
+    a: false,
+    b: false,
   });
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
@@ -44,17 +46,14 @@ export function App() {
   const userDisconnectRef = useRef(false);
 
   const bleServiceRef = useRef<BluetoothService>(new BluetoothService());
-  const commandRef = useRef<Command>({ vx: 0, vy: 0, w: 0 });
+  const commandRef = useRef<Command>({
+    vx: 0,
+    vy: 0,
+    w: 0,
+    a: false,
+    b: false,
+  });
   const odometryCanvasRef = useRef<OdometryCanvasHandle | null>(null);
-
-  const formatVelocity = (value: number) => {
-    return (
-      <>
-        {value < 0 ? '-' : <>&nbsp;</>}
-        {Math.abs(value).toFixed(2)}
-      </>
-    );
-  };
 
   const setCommandVelocities = (vx: number, vy: number) => {
     setCommand((prev) => {
@@ -68,6 +67,24 @@ export function App() {
     setCommand((prev) => {
       if (prev.w === w) return prev;
       const next = { ...prev, w };
+      commandRef.current = next;
+      return next;
+    });
+  };
+
+  const setButtonA = (pressed: boolean) => {
+    setCommand((prev) => {
+      if (prev.a === pressed) return prev;
+      const next = { ...prev, a: pressed };
+      commandRef.current = next;
+      return next;
+    });
+  };
+
+  const setButtonB = (pressed: boolean) => {
+    setCommand((prev) => {
+      if (prev.b === pressed) return prev;
+      const next = { ...prev, b: pressed };
       commandRef.current = next;
       return next;
     });
@@ -166,7 +183,7 @@ export function App() {
     <div>
       <div className="mx-auto max-w-md space-y-3 px-4 py-6">
         <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950/80">
-          <OdometryCanvas ref={odometryCanvasRef} />
+          <OdometryCanvas ref={odometryCanvasRef} command={command} />
         </div>
 
         <YawJoystick onChange={setCommandYaw} />
@@ -174,7 +191,7 @@ export function App() {
           <div className="flex-shrink-0">
             <VelocityJoystick onChange={setCommandVelocities} />
           </div>
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 self-stretch flex flex-col gap-2">
             <button
               type="button"
               onClick={() => {
@@ -193,12 +210,33 @@ export function App() {
             >
               {buttonLabel}
             </button>
-            <div className="rounded-xl border border-white/10 bg-slate-900/60 px-2 py-3 text-xs text-slate-200 flex justify-center">
-              <div className="space-y-1 font-mono text-sm">
-                <div>vx: {formatVelocity(command.vx)} m/s</div>
-                <div>vy: {formatVelocity(command.vy)} m/s</div>
-                <div>&nbsp;w: {formatVelocity(command.w)} rad/s</div>
-              </div>
+            <div className="grid grid-cols-2 gap-2 flex-1">
+              <button
+                type="button"
+                onPointerDown={() => setButtonA(true)}
+                onPointerUp={() => setButtonA(false)}
+                onPointerLeave={() => setButtonA(false)}
+                className={`rounded-lg py-2 font-bold transition select-none flex items-center justify-center text-xl ${
+                  command.a
+                    ? 'bg-red-600 text-white scale-95 shadow-inner'
+                    : 'bg-red-500/20 text-red-400 hover:bg-red-500/30 shadow-sm border border-red-500/40'
+                }`}
+              >
+                A
+              </button>
+              <button
+                type="button"
+                onPointerDown={() => setButtonB(true)}
+                onPointerUp={() => setButtonB(false)}
+                onPointerLeave={() => setButtonB(false)}
+                className={`rounded-lg py-2 font-bold transition select-none flex items-center justify-center text-xl ${
+                  command.b
+                    ? 'bg-blue-600 text-white scale-95 shadow-inner'
+                    : 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 shadow-sm border border-blue-500/40'
+                }`}
+              >
+                B
+              </button>
             </div>
           </div>
         </div>

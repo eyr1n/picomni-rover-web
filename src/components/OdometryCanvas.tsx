@@ -5,14 +5,21 @@ import {
   useImperativeHandle,
   useRef,
 } from 'react';
-import type { Odometry } from '../types';
+import type { Command, Odometry } from '../types';
 
 export type OdometryCanvasHandle = {
   push: (odometry: Odometry) => void;
   clear: () => void;
 };
 
-export const OdometryCanvas = forwardRef<OdometryCanvasHandle>((_, ref) => {
+type OdometryCanvasProps = {
+  command?: Command;
+};
+
+export const OdometryCanvas = forwardRef<
+  OdometryCanvasHandle,
+  OdometryCanvasProps
+>(({ command }, ref) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const historyRef = useRef<Odometry[]>([]);
   const rafRef = useRef<number | null>(null);
@@ -81,7 +88,7 @@ export const OdometryCanvas = forwardRef<OdometryCanvasHandle>((_, ref) => {
         toY - headLength * Math.sin(angle + Math.PI / 6),
       );
       context.stroke();
-      context.font = '12px monospace';
+      context.font = '12px "JetBrains Mono", "Roboto Mono", monospace';
       context.fillText(label, toX + labelOffsetX, toY + labelOffsetY);
     };
 
@@ -170,14 +177,25 @@ export const OdometryCanvas = forwardRef<OdometryCanvasHandle>((_, ref) => {
       context.fill();
 
       context.fillStyle = '#e2e8f0';
-      context.font = '12px monospace';
+      context.font = '12px "JetBrains Mono", "Roboto Mono", monospace';
       context.fillText(
         `x:${latest.x.toFixed(2)} y:${latest.y.toFixed(2)} yaw:${latest.yaw.toFixed(2)}`,
         pos.x + 10,
         pos.y - 14,
       );
     }
-  }, []);
+
+    // Render command velocities in the corner
+    if (command) {
+      const format = (v: number) =>
+        `${v < 0 ? '' : ' '}${v.toFixed(2).padStart(5, ' ')}`;
+      context.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      context.font = '14px "JetBrains Mono", "Roboto Mono", monospace';
+      context.fillText(`vx:${format(command.vx)} m/s`, 12, 24);
+      context.fillText(`vy:${format(command.vy)} m/s`, 12, 42);
+      context.fillText(` w:${format(command.w)} rad/s`, 12, 60);
+    }
+  }, [command]);
 
   const scheduleDraw = useCallback(() => {
     if (!rafScheduledRef.current) {
